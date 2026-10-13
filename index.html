@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Қайнау. Меншікті булану жылуы — 8-сынып</title>
+<style>
+:root{
+  --paper:#f4efe5; --card:#fffdf8; --ink:#1f2630; --muted:#6b6658; --line:#dcd3bf;
+  --hot:#d2462f; --hot-d:#9d2f1d; --steam:#5a8fc2; --water:#2f7fc0; --amber:#e8a53a; --green:#2e7d4f;
+  --frame:#6b4a2b; --board:#1d2a26;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#2b2724}
+body{color:var(--ink);font-family:"Segoe UI","Noto Sans",system-ui,sans-serif}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--paper);overflow:hidden;
+  background-image:radial-gradient(circle at 12% 0%,rgba(210,70,47,.07),transparent 40%),linear-gradient(rgba(47,127,192,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(47,127,192,.045) 1px,transparent 1px);background-size:auto,24px 24px,24px 24px}
+.top{position:absolute;left:0;right:0;top:0;height:54px;display:flex;align-items:center;gap:14px;padding:0 20px;background:linear-gradient(90deg,#9d2f1d,#d2462f 60%,#e8763a);color:#fff}
+.top .lesson{font-size:13px;letter-spacing:2px;text-transform:uppercase;opacity:.9}
+.top .stitle{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:600}
+.top .sep{width:1px;height:22px;background:rgba(255,255,255,.4)}
+.top .fsb{margin-left:auto;background:#fff;color:var(--hot-d);border:none;font-weight:700}
+.mainw{position:absolute;left:0;right:0;top:54px;bottom:56px;display:flex}
+.leftw{position:relative;width:1080px;flex:none}
+.stage.wide .leftw{width:100%} .stage.wide .rightw{display:none}
+.slide{position:absolute;inset:0;padding:16px 24px 12px 28px;display:none;flex-direction:column;gap:11px}
+.slide.on{display:flex;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+h2.st{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:29px;margin:0}
+h2.st small{display:block;font:600 12.5px "Segoe UI",sans-serif;letter-spacing:2.2px;color:var(--hot);text-transform:uppercase;margin-bottom:3px}
+p.lead{font-size:17.5px;line-height:1.5;margin:0;color:#2c3340}
+.def{border-left:6px solid var(--hot);background:linear-gradient(90deg,#fbe3d4,#fbf3e6);padding:9px 15px;font:600 18px/1.45 Georgia,serif;border-radius:3px}
+.fbox{background:#fff;border:1px solid var(--line);border-left:6px solid var(--amber);border-radius:4px;padding:8px 15px;font-family:"Cambria Math","Times New Roman",serif;font-size:19px;line-height:1.6}
+.fbox .big{font-size:30px;font-style:italic;font-weight:600}
+.fbox .note{font-family:"Segoe UI",sans-serif;font-size:14px;color:var(--muted)}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.1}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}
+canvas.lab{display:block;width:100%;border:1px solid var(--line);border-radius:5px;background:#fff}
+.row{display:flex;gap:13px;align-items:stretch}
+.col{display:flex;flex-direction:column;gap:9px}
+.grow{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:10px 14px}
+.card h3{margin:0 0 7px;font:700 13.5px "Segoe UI",sans-serif;text-transform:uppercase;letter-spacing:.6px;color:var(--hot)}
+.ctl .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:var(--muted);margin-bottom:3px}
+.ctl .val{font:700 17px Georgia,serif;color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--hot);height:22px;margin:0}
+.btn{font:inherit;font-size:14.5px;padding:7px 13px;cursor:pointer;border-radius:4px;border:1px solid #cbbfa6;background:#fff;color:var(--ink)}
+.btn:hover{border-color:var(--hot)}
+.btn.main{background:var(--hot);border-color:var(--hot-d);color:#fff;font-weight:600}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.readout{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.readout>div{background:#fff;padding:6px 10px}
+.readout .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.readout .v{font:700 18px Georgia,serif}
+.steps{background:#fff;border:1px solid var(--line);border-left:4px solid var(--steam);border-radius:4px;padding:7px 13px;font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.85}
+.steps .s{color:var(--muted);font-family:"Segoe UI",sans-serif;font-size:13.5px}
+.steps b{color:var(--hot)}
+.tip{border:1px dashed var(--steam);background:#eef4fa;border-radius:4px;padding:7px 12px;font-size:15px;line-height:1.45}
+.warn{border:1px dashed var(--hot);background:#fff2ee;border-radius:4px;padding:7px 12px;font-size:15px;line-height:1.45}
+table.t{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff}
+table.t th,table.t td{border:1px solid var(--line);padding:4px 8px;text-align:center}
+table.t th{background:#f6e7dc;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.stp{display:flex;gap:10px;align-items:center;opacity:.13;transition:.3s;font-family:"Times New Roman",serif;font-size:21px;min-height:44px;border-bottom:1px dashed #eee3cf}
+.stp.on{opacity:1}
+.stp .n{font:700 12px "Segoe UI";color:#fff;background:var(--hot);border-radius:50%;width:22px;height:22px;display:inline-grid;place-items:center;flex:none}
+.stp .ex{font:14px "Segoe UI";color:var(--muted);width:230px;flex:none}
+.q{background:#fff;border:1px solid var(--line);border-radius:5px;padding:7px 11px}
+.q .qt{font-size:14.5px;line-height:1.4;margin-bottom:5px}
+.ans{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ans input{font:inherit;font-size:15px;width:96px;padding:4px 7px;border:1px solid #cbbfa6;border-radius:4px}
+.opt{font:inherit;font-size:13.5px;padding:4px 9px;border-radius:4px;border:1px solid #cbbfa6;background:#fff;cursor:pointer}
+.opt.sel{border-color:var(--steam);background:#e6eef8}
+.ok{color:var(--green);font-weight:700} .no{color:var(--hot);font-weight:700}
+.gl3d{display:block;width:100%;border-radius:6px;border:1px solid var(--line);touch-action:none;cursor:grab}
+.lbl3d{position:absolute;transform:translate(-50%,-100%);background:rgba(31,38,48,.86);color:#fff;font:600 12.5px "Segoe UI";padding:3px 8px;border-radius:4px;white-space:nowrap;pointer-events:none}
+
+/* жарыс */
+.duel{position:absolute;inset:0;display:grid;grid-template-columns:1fr 150px 1fr;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.side{padding:16px 22px;display:flex;flex-direction:column;gap:12px}
+.side.A{background:linear-gradient(180deg,#dfe9f7,#c9daf1)} .side.B{background:linear-gradient(180deg,#f8e1de,#f1cbc6)}
+.side .who{display:flex;align-items:center;gap:12px}
+.side .who input{font:700 22px Georgia,serif;border:none;border-bottom:2px dashed rgba(0,0,0,.25);background:transparent;width:260px;padding:2px 4px}
+.side .sc{margin-left:auto;font:800 52px Georgia,serif;line-height:1}
+.side.A .sc{color:#1f5fa8} .side.B .sc{color:var(--hot)}
+.prog{display:flex;justify-content:space-between;font:600 17px "Segoe UI"}
+.pclock{font:700 20px Consolas,monospace}
+.pbar{height:10px;background:rgba(255,255,255,.6);border-radius:5px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;transition:width .3s}
+.side.A .pbar i{background:#1f5fa8} .side.B .pbar i{background:var(--hot)}
+.side .qq{background:#fff;border-radius:8px;padding:14px 18px;font:700 27px/1.35 "Segoe UI",sans-serif;min-height:140px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.side .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.side .o{font:700 24px Georgia,serif;padding:18px 10px;border-radius:10px;border:3px solid rgba(0,0,0,.12);background:#fff;cursor:pointer;min-height:92px;touch-action:none;-webkit-tap-highlight-color:transparent;color:var(--ink)}
+.side .o.good{background:#2e7d4f;color:#fff;border-color:#1f5a38}
+.side .o.badc{background:#c8352b;color:#fff;border-color:#8e241d}
+.side .stat{font:600 19px "Segoe UI";min-height:28px}
+.mid{background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:10px;text-align:center}
+.mid .num{font:800 30px Georgia,serif} .mid .lbl{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7}
+.overlay{position:absolute;inset:0;background:rgba(31,38,48,.82);display:flex;align-items:center;justify-content:center;z-index:5}
+.overlay .box{background:#fff;border-radius:12px;padding:26px 36px;text-align:center;max-width:740px}
+.overlay h3{font:700 32px Georgia,serif;margin:0 0 10px}
+.overlay p{font-size:18px;color:#444;line-height:1.5}
+
+/* тақта (кішкене) */
+.rightw{flex:1;padding:12px 14px 12px 2px;display:flex}
+.board{flex:1;position:relative;border:9px solid var(--frame);border-radius:6px;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.55),0 8px 20px rgba(0,0,0,.2);
+  background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/100% 40px,radial-gradient(ellipse at 30% 20%,#25352f 0%,var(--board) 70%)}
+.board::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:linear-gradient(#5a3e24,#3f2a17);pointer-events:none}
+.tools{display:flex;align-items:center;gap:5px;padding:6px 8px;background:rgba(0,0,0,.25);z-index:2;flex-wrap:wrap}
+.sw{width:23px;height:23px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;flex:none}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.6)}
+.tb{white-space:nowrap;font:inherit;font-size:12.5px;background:rgba(255,255,255,.06);color:#dfe7e2;border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:3px 7px;cursor:pointer;flex:none}
+.tb.on{background:#e8e3cf;color:#1d2a26}
+.bhint{position:absolute;left:14px;bottom:18px;font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:rgba(230,240,232,.28);pointer-events:none;z-index:1;right:10px}
+#ink{display:block;flex:1;min-height:0;width:100%;margin-bottom:10px;touch-action:none;cursor:crosshair;position:relative;z-index:1}
+
+.bottom{position:absolute;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 18px;background:var(--ink)}
+.bottom .btn{background:transparent;color:#eee;border-color:#4b5262}
+.bottom .btn.main{background:var(--amber);color:#1f2630;border-color:var(--amber)}
+.dots{display:flex;gap:4px;margin:0 6px}
+.dot{width:30px;height:30px;border-radius:4px;border:1px solid #4b5262;background:transparent;color:#bbb;font-size:12.5px;cursor:pointer;padding:0}
+.dot.on{background:var(--amber);color:#1f2630;border-color:var(--amber);font-weight:700}
+.dot.gm{border-color:var(--hot)}
+.cnt{margin-left:auto;color:#cfd3dc;font:15px Georgia,serif}
+.toast{position:absolute;left:50%;top:64px;transform:translate(-50%,-10px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:5px;opacity:0;transition:.25s;pointer-events:none;z-index:20;font-size:16px}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+sup,sub{font-size:.72em;line-height:0}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="top"><span class="lesson">Физика · 8-сынып · §12</span><span class="sep"></span><span class="stitle" id="stitle"></span>
+    <button class="btn fsb" id="fsTop">⛶ Толық экран</button></div>
+  <div class="mainw">
+    <div class="leftw" id="slides">
+
+<!-- 1 -->
+<section class="slide" data-title="Кіріспе" data-hint="Тақырып, күні...">
+  <h2 class="st" style="font-size:44px;line-height:1.1;margin-top:6px"><small>Жылу құбылыстары · §12</small>Қайнау. Меншікті булану жылуы</h2>
+  <p class="lead" style="color:var(--muted)">Қайнау температурасының сыртқы орта қысымына тәуелділігі</p>
+  <canvas class="lab" id="cTitle" width="1020" height="470"></canvas>
+  <div style="font-size:14px;color:var(--muted)">«Тайтөбе ауылының ЖОББМ» КММ · мұғалім Төленді И.Н.</div>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-title="Сабақтың мақсаты" data-hint="Еске түсір: булану, балқу, Q = cmΔt ...">
+  <h2 class="st"><small>Күтілетін нәтиже</small>Параграфты оқып, сендер:</h2>
+  <div class="row">
+    <div class="card grow" style="font-size:18px;line-height:1.7">🔥 қайнау кезіндегі <b>жылу мөлшерін</b> анықтай аласыңдар;<br>⛰️ қайнау температурасының <b>сыртқы қысымға тәуелділігін</b> түсіндіре аласыңдар.</div>
+    <div class="card" style="width:430px"><h3>Еске түсірейік</h3><div style="font-size:16px;line-height:1.65">• Булану дегеніміз не?<br>• Қыздыруға кететін жылу: <b>Q = cm(t₂ − t₁)</b><br>• Балқуға кететін жылу: <b>Q = λm</b></div></div>
+  </div>
+  <canvas class="lab" id="cGoal" width="1020" height="430"></canvas>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-title="Қайнау. Қайнау температурасы" data-hint="Көпіршік → Архимед күші → бетке шығады...">
+  <h2 class="st"><small>I · Қайнау</small>Қайнау кезінде не болады?</h2>
+  <div class="row">
+    <canvas class="lab" id="cBoil" width="620" height="520" style="width:620px"></canvas>
+    <div class="col grow">
+      <div class="card"><h3>Кезеңдер</h3><div id="bStages" style="font-size:15px;line-height:1.55"></div></div>
+      <div class="row"><button class="btn main" id="bHeat">🔥 Қыздыру</button><button class="btn" id="bRe">↺ Басынан</button></div>
+      <div class="tip"><b>Назар аударыңдар!</b> Сұйық қайнағанда буға айналу процесі сұйық көлемін <b>тұтас қамтиды</b> (булану тек беттен жүреді).</div>
+      <div class="def" style="font-size:16.5px">Сұйық қайнайтын температураны <i>қайнау температурасы</i> деп атайды.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-title="Меншікті булану жылуы" data-hint="r = Q/m,  [r] = Дж/кг">
+  <h2 class="st"><small>II · Жаңа шама</small>Меншікті булану жылуы</h2>
+  <div class="def">Меншікті булану жылуы — қайнау температурасындағы 1 кг сұйықты буға айналдыру үшін қажет жылу мөлшеріне тең физикалық шама.</div>
+  <div class="row">
+    <div class="fbox" style="width:320px;text-align:center"><span class="big">r = <span class="fr"><span>Q</span><span>m</span></span></span><br><span class="note">[r] = </span><span class="fr"><span>Дж</span><span>кг</span></span></div>
+    <div class="fbox grow" style="font-size:17px"><b>Су үшін r = 2,3·10⁶ Дж/кг.</b> Бұл — массасы 1 кг судың 100 °C температурада буға айналуы үшін <b>2,3·10⁶ Дж</b> энергия қажет дегенді білдіреді.</div>
+  </div>
+  <canvas class="lab" id="cR" width="1020" height="420"></canvas>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-title="Қайнау және конденсация кезіндегі жылу" data-hint="Q = rm;  Q = cm(t₂−t₁) + rm;  Q = −rm">
+  <h2 class="st"><small>III · Жылу мөлшерін есептеу</small>Қайнау және конденсация кезіндегі жылу мөлшері</h2>
+  <div class="row">
+    <div class="fbox grow" style="text-align:center"><span class="note">қайнау t-сында тұрған сұйық</span><br><span class="big">Q = rm</span></div>
+    <div class="fbox grow" style="text-align:center"><span class="note">t₁ &lt; t<sub>қ</sub> болса: қыздыру + қайнату</span><br><span class="big">Q = cm(t₂ − t₁) + rm</span></div>
+    <div class="fbox grow" style="text-align:center;border-left-color:var(--steam)"><span class="note">конденсация — жылу бөлінеді</span><br><span class="big">Q = −rm</span></div>
+  </div>
+  <canvas class="lab" id="cQ" width="1020" height="300"></canvas>
+  <div class="row" style="align-items:center">
+    <div class="ctl grow"><div class="lab"><span>Масса m</span><span class="val" id="qMv"></span></div><input type="range" id="qM" min="0.2" max="3" step="0.1" value="1"></div>
+    <div class="ctl grow"><div class="lab"><span>Бастапқы температура t₁</span><span class="val" id="qTv"></span></div><input type="range" id="qT" min="0" max="100" step="5" value="20"></div>
+    <button class="btn on" data-qm="0">🔥 Қайнату</button><button class="btn" data-qm="1">💧 Конденсация</button>
+  </div>
+  <div class="steps" id="qOut"></div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-title="t(Q) графигі: булану және конденсация" data-hint="AB — қызу, BC — қайнау, CD — будың қызуы">
+  <h2 class="st"><small>IV · Графиктер</small>Температураның уақытқа (жылуға) тәуелділігі</h2>
+  <div class="row">
+    <canvas class="lab" id="cG" width="720" height="470" style="width:720px"></canvas>
+    <div class="col grow">
+      <canvas class="lab" id="cGb" width="290" height="250" style="width:100%"></canvas>
+      <div class="card" id="gTxt" style="font-size:15px;line-height:1.5;min-height:120px"></div>
+    </div>
+  </div>
+  <div class="row" style="align-items:center">
+    <button class="btn on" data-gm="0">45-сурет: судың қызуы және қайнауы</button><button class="btn" data-gm="1">46-сурет: будың конденсациялануы</button>
+    <button class="btn main" id="gPlay">▶ Бастау</button>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-title="Қайнау температурасы және қысым" data-hint="Қысым ↓ → t қайнау ↓;  қысым ↑ → t қайнау ↑">
+  <h2 class="st"><small>V · Қысымға тәуелділік</small>Тауда неге тамақ ұзақ піседі?</h2>
+  <canvas class="lab" id="cP" width="1020" height="420"></canvas>
+  <div class="row" style="align-items:center">
+    <div class="ctl grow"><div class="lab"><span>Теңіз деңгейінен биіктік</span><span class="val" id="pHv"></span></div><input type="range" id="pH" min="-28" max="8848" step="1" value="350"></div>
+    <button class="btn" id="pCook">🍲 Скороварка (200 кПа)</button>
+  </div>
+  <div class="readout"><div><div class="k">Атмосфералық қысым</div><div class="v" id="pP"></div></div><div><div class="k">Судың қайнау t-сы</div><div class="v" id="pT" style="color:var(--hot)"></div></div><div><div class="k">Орын</div><div class="v" id="pN" style="font-size:16px"></div></div><div><div class="k">Қорытынды</div><div class="v" id="pC" style="font-size:14px;font-family:Segoe UI"></div></div></div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-title="Виртуалды зертхана: r-ді өлшейміз" data-hint="r = P·Δt / Δm  (қайнау кезінде)">
+  <h2 class="st" style="font-size:25px"><small>Виртуалды зертхана</small>Электр шәйнегімен меншікті булану жылуын анықтау</h2>
+  <canvas class="lab" id="cLab" width="1020" height="330"></canvas>
+  <div class="row" style="align-items:center">
+    <button class="btn on" data-lq="0">💧 Су</button><button class="btn" data-lq="1">🧪 Спирт</button>
+    <div class="ctl grow"><div class="lab"><span>Масса m₀</span><span class="val" id="lMv"></span></div><input type="range" id="lM" min="300" max="1500" step="50" value="800"></div>
+    <div class="ctl grow"><div class="lab"><span>Қуат P</span><span class="val" id="lPv"></span></div><input type="range" id="lP" min="1000" max="2500" step="100" value="2000"></div>
+    <button class="btn main" id="lGo">▶ Қосу</button><button class="btn" id="lSp">×10</button><button class="btn" id="lRe">↺</button><button class="btn" id="lRec">📝 Жазу</button>
+  </div>
+  <div class="row">
+    <div class="grow" style="max-height:178px;overflow:auto"><table class="t" id="lTab"></table></div>
+    <div class="card" style="width:420px"><h3>Тапсырма</h3>
+      <div style="font-size:14px;line-height:1.45">Қайнау кезінде <b>кемінде 30 с</b> аралықпен екі өлшеуді жаз. Шәйнек беретін жылу Q = P·Δt, буға айналған масса Δm = m₁ − m₂. Бұдан <b>r = P·Δt / Δm</b>. <i>(Жылу шығыны жоқ деп аламыз.)</i></div>
+      <div class="ans" style="margin-top:6px">r = <input id="lAns" placeholder="2,3e6"> Дж/кг <button class="btn main" id="lChk">Тексеру</button><span id="lRes"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-title="Есеп шығару үлгісі" data-hint="Берілгені ... Шешуі ... Жауабы ...">
+  <h2 class="st"><small>Есеп шығарамыз</small>Есеп шығару үлгісі</h2>
+  <p class="lead" style="font-size:20px">Температурасы <b>20 °C</b>, массасы <b>2 кг</b> суды толық буға айналдыру үшін қанша жылу мөлшері қажет? &nbsp;<span style="font-size:15px;color:var(--muted)">(c = 4200 Дж/(кг·°C), r = 2,3·10⁶ Дж/кг)</span></p>
+  <div class="card" id="ex">
+    <div class="stp"><span class="n">1</span><span class="ex">Берілгені</span><span>m = 2 кг; t₁ = 20 °C; t₂ = 100 °C; c = 4200 Дж/(кг·°C); r = 2,3·10⁶ Дж/кг. &nbsp;Q — ?</span></div>
+    <div class="stp"><span class="n">2</span><span class="ex">Суды 100 °C-қа дейін қыздыру</span><span>Q₁ = cm(t₂ − t₁) = 4200 · 2 · 80 = 672 000 Дж = 0,672 МДж</span></div>
+    <div class="stp"><span class="n">3</span><span class="ex">Суды буға айналдыру</span><span>Q₂ = rm = 2,3·10⁶ · 2 = 4 600 000 Дж = 4,6 МДж</span></div>
+    <div class="stp"><span class="n">4</span><span class="ex">Барлық жылу</span><span>Q = Q₁ + Q₂ = 0,672 + 4,6 = <b style="color:var(--hot)">5,272 МДж ≈ 5,3·10⁶ Дж</b></span></div>
+    <div class="stp"><span class="n">!</span><span class="ex">Талдау</span><span style="font-size:18px">Буға айналдыру қыздыруға қарағанда ~7 есе көп энергия алады!</span></div>
+  </div>
+  <div class="row"><button class="btn main" id="exN">Келесі қадам ▸</button><button class="btn" id="exR">Басынан</button></div>
+  <canvas class="lab" id="cEx" width="1020" height="120"></canvas>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-title="Функционалдық сауаттылық: жылыжай" data-hint="Бу құбырда конденсацияланып жылу береді: Q = rm">
+  <h2 class="st" style="font-size:25px"><small>Функционалдық сауаттылық · 3D</small>Қысқы жылыжай: бумен жылыту</h2>
+  <div style="font-size:15px;line-height:1.45">Фермер Ерлан қыста қызанақ өсіреді. Сыртта <b>−15 °C</b>, жылыжай ішінде <b>+22 °C</b> болуы керек. Жылыжайды <b>қазандықтан келетін бу</b> жылытады: бу құбырларда <b>конденсацияланып</b>, жылу бөледі, ал конденсат (ыстық су) қазанға қайта ағады. Сызбаны тышқанмен айналдырып қараңдар.</div>
+  <div style="position:relative" id="ghWrap"><canvas class="gl3d" id="gh3d" width="1020" height="470"></canvas><div id="ghLbl"></div></div>
+  <div class="row" style="align-items:center"><button class="btn on" id="ghRot">⟳ Автоайналу</button><button class="btn" id="ghSteam">♨ Буды өшіру</button>
+    <span style="font-size:14px;color:var(--muted)">Келесі слайдта — осы жағдаятқа есептер</span></div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-title="Функционалдық сауаттылық: есептер" data-hint="m = Q / r ...">
+  <h2 class="st" style="font-size:25px"><small>Функционалдық сауаттылық</small>Жылыжайдың есебін шығарайық</h2>
+  <div class="tip" style="font-size:14px">Анықтамалық: r<sub>су</sub> = 2,3·10⁶ Дж/кг; c<sub>су</sub> = 4200 Дж/(кг·°C); 1 МДж = 10⁶ Дж. &nbsp;Тәулікке жылыжайдың жылу шығыны: <b>460 МДж</b>.</div>
+  <div id="fsQ" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-title="Сергіту сәті: «Кім жылдам?»" data-wide="1">
+  <div class="duel" id="duel">
+    <div class="side A" id="sideA"><div class="who"><input id="nmA" value="1-оқушы"><span class="sc" id="scA">0</span></div>
+      <div class="prog"><span id="prA"></span><span class="pclock" id="ckA">0,0 с</span></div><div class="pbar"><i id="pbA"></i></div>
+      <div class="qq" id="qA"></div><div class="opts" id="oA"></div><div class="stat" id="stA"></div></div>
+    <div class="mid"><div class="lbl">Сергіту сәті</div><div class="num" id="gNum">—</div><div class="lbl">әркім өз<br>сұрағын шешеді</div>
+      <button class="btn" id="gRestart" style="color:#fff;background:transparent;border-color:#5b6272">↺ Қайта</button></div>
+    <div class="side B" id="sideB"><div class="who"><input id="nmB" value="2-оқушы"><span class="sc" id="scB">0</span></div>
+      <div class="prog"><span id="prB"></span><span class="pclock" id="ckB">0,0 с</span></div><div class="pbar"><i id="pbB"></i></div>
+      <div class="qq" id="qB"></div><div class="opts" id="oB"></div><div class="stat" id="stB"></div></div>
+    <div class="overlay" id="gOver"><div class="box"><h3>Сергіту сәті · «Кім жылдам?»</h3>
+      <p>Тақтаға <b>екі оқушы</b> шығады: біреуі сол жаққа, екіншісі оң жаққа. Аттарыңды жоғарыға жазыңдар.<br>Әрқайсыңа <b>өз сұрақтарың</b> (8 сұрақ). Бір-біріңді күтпейсіңдер — дұрыс жауапты басыңдар!<br>Дұрыс — <b>+1 ұпай</b>. Ұпай тең болса, <b>жылдам</b> бітірген жеңеді.</p>
+      <button class="btn main" id="gStart" style="font-size:20px;padding:12px 28px">▶ Жарысты бастау</button></div></div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-title="Қорытынды және үй тапсырмасы" data-hint="Бүгін не білдім? ...">
+  <h2 class="st"><small>Қорытынды</small>Есте сақтаңдар!</h2>
+  <div class="row">
+    <div class="card grow"><h3>Формулалар</h3><div style="font:italic 20px/1.7 'Times New Roman',serif">r = Q/m, &nbsp;[r] = Дж/кг<br>Q = rm &nbsp;·&nbsp; Q = cm(t₂−t₁) + rm &nbsp;·&nbsp; Q = −rm</div></div>
+    <div class="card grow"><h3>Есте сақтаңдар</h3><div style="font-size:15.5px;line-height:1.5">Газ күйіндегі заттың ішкі энергиясы қайнау температурасы кезінде оның сұйық күйіндегі ішкі энергиясынан <b>көбірек</b> болады.</div></div>
+  </div>
+  <div class="card"><h3>Жауабы қандай?</h3><ol style="margin:0;padding-left:22px;font-size:15.5px;line-height:1.55">
+    <li>Неліктен заттың меншікті булану жылуы меншікті балқу жылуынан көбірек болады?</li>
+    <li>Не себепті қайнау кезінде сұйыққа берілген жылу мен конденсация кезінде бөлінген жылу бірдей болады?</li>
+    <li>Қайнау кезінде неге шуыл мен бүлкілдеу болады?</li>
+    <li>Әртүрлі заттардың қайнау температурасы неге әртүрлі болады?</li></ol></div>
+  <div class="card"><h3>Үй тапсырмасы</h3><ol style="margin:0;padding-left:22px;font-size:15.5px;line-height:1.55">
+    <li>§12 оқу, формулаларды жаттау; «Жауабы қандай?» сұрақтарына жазбаша жауап беру.</li>
+    <li>0,5 кг спиртті (78 °C) буға айналдыруға қанша жылу керек? (r = 0,9·10⁶ Дж/кг)</li>
+    <li>Үйде: шәйнекке 1 л су құйып, қайнағанға дейінгі уақытты өлшеңдер. Шәйнек қуатын (P) біліп, суға берілген жылуды есептеңдер.</li></ol></div>
+</section>
+
+    </div>
+    <div class="rightw">
+      <div class="board">
+        <div class="tools">
+          <button class="sw on" data-c="#f2efe2" style="background:#f2efe2"></button><button class="sw" data-c="#ffd75e" style="background:#ffd75e"></button>
+          <button class="sw" data-c="#ff8fa3" style="background:#ff8fa3"></button><button class="sw" data-c="#7fd8ff" style="background:#7fd8ff"></button>
+          <button class="tb" data-w="2.4">жіңішке</button><button class="tb on" data-w="3.8">орташа</button>
+          <button class="tb" id="erase">⌫</button><button class="tb" id="undo" title="Ctrl+Z">↶</button><button class="tb" id="wipe">тазалау</button>
+        </div>
+        <div class="bhint" id="bhint"></div>
+        <canvas id="ink"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <button class="btn" id="prev">◀ Артқа</button><div class="dots" id="dots"></div><button class="btn main" id="next">Келесі ▶</button>
+    <span class="cnt" id="cnt"></span><button class="btn" id="snd">🔊</button><button class="btn" id="fs">⛶ Толық экран</button>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="three.min.js"></script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const fx=(v,d=1)=>(Math.round(v*10**d)/10**d).toFixed(d).replace('.',',');
+const nice=(v,d=2)=>fx(v,d).replace(/,?0+$/,'');
+const F=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+function sci(v,d=2){ if(v===0) return '0'; let e=Math.floor(Math.log10(Math.abs(v))),m=v/10**e; if(Math.abs(+m.toFixed(d))>=10){m/=10;e++;} return m.toFixed(d).replace('.',',')+'·10'+String(e).split('').map(c=>SUP[c]).join(''); }
+let toastT; function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2300); }
+const store={ get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+function parseNum(s){ s=String(s).trim().replace(/\s/g,'').replace(/,/g,'.').replace(/[·×x*]10\^?\(?(-?\d+)\)?$/i,'e$1'); return s===''?NaN:Number(s); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const SND=(()=>{ let ac=null,on=store.get('qn_snd',true);
+  function init(){ if(ac){ if(ac.state==='suspended') ac.resume(); return; } const C=window.AudioContext||window.webkitAudioContext; if(C) ac=new C(); }
+  function tone(f,d,vol=.14,at=0,type='sine'){ if(!ac||!on) return; const t=ac.currentTime+at,o=ac.createOscillator(),g=ac.createGain(); o.type=type; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d+.02); }
+  function noise(d,vol=.05){ if(!ac||!on) return; const b=ac.createBuffer(1,ac.sampleRate*d,ac.sampleRate),x=b.getChannelData(0); for(let i=0;i<x.length;i++) x[i]=(Math.random()*2-1)*(1-i/x.length);
+    const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain(); f.type='lowpass'; f.frequency.value=900; g.gain.value=vol; s.buffer=b; s.connect(f); f.connect(g); g.connect(ac.destination); s.start(); }
+  return { init, get on(){return on;}, toggle(){ on=!on; store.set('qn_snd',on); return on; }, ok(){ tone(660,.14); tone(990,.25,.14,.11); }, bad(){ tone(190,.3,.08,0,'square'); },
+    page(){ tone(520,.07,.04); }, tick(){ tone(1300,.05,.05); }, go(){ tone(880,.12,.1); }, bubble(){ tone(300+Math.random()*500,.05,.03); }, hiss(){ noise(.6,.04); }, win(){ [523,659,784,1046].forEach((f,i)=>tone(f,.25,.14,i*.13)); } }; })();
+document.addEventListener('pointerdown',()=>SND.init(),{capture:true});
+
+/* ---------- сурет көмекшілері ---------- */
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function label(ctx,t,x,y,col='#1f2630',size=13,align='center',bold=false,font='Segoe UI'){ ctx.fillStyle=col; ctx.font=(bold?'700 ':'')+size+'px '+font+', sans-serif'; ctx.textAlign=align; ctx.fillText(t,x,y); ctx.textAlign='left'; }
+function arrow(ctx,x0,y0,x1,y1,col,w=2){ ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); const a=Math.atan2(y1-y0,x1-x0); ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x1-10*Math.cos(a-.45),y1-10*Math.sin(a-.45)); ctx.lineTo(x1-10*Math.cos(a+.45),y1-10*Math.sin(a+.45)); ctx.fill(); }
+function flame(ctx,x,y,s,t){ for(let k=0;k<3;k++){ const h=(38-k*10)*s*(1+.12*Math.sin(t*14+k*2)); const g=ctx.createLinearGradient(x,y,x,y-h); g.addColorStop(0,['#ff9a1f','#ffd23f','#fff4c0'][k]); g.addColorStop(1,'rgba(255,90,30,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(x-(14-k*4)*s,y); ctx.quadraticCurveTo(x-(10-k*3)*s,y-h*.6,x,y-h); ctx.quadraticCurveTo(x+(10-k*3)*s,y-h*.6,x+(14-k*4)*s,y); ctx.fill(); } }
+function thermo(ctx,x,y,h,T,Tmax=120,col='#d2462f'){ ctx.fillStyle='#fff'; ctx.strokeStyle='#888'; ctx.lineWidth=1.5; rr(ctx,x-7,y,14,h,7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(x,y+h+8,12,0,6.3); ctx.fillStyle=col; ctx.fill(); ctx.stroke();
+  const f=Math.max(0,Math.min(1,T/Tmax)); ctx.fillStyle=col; ctx.fillRect(x-3.5,y+h-(h-8)*f,7,(h-8)*f+8);
+  for(let v=0;v<=Tmax;v+=20){ const yy=y+h-(h-8)*v/Tmax; ctx.fillStyle='#555'; ctx.fillRect(x+7,yy,6,1); label(ctx,String(v),x+16,yy+4,'#555',10,'left'); } }
+// ортақ: бу бұлттары
+function steamPuffs(ctx,arr,x,y,rate,dt,spread=20){ if(Math.random()<rate*dt) arr.push({x:x+(Math.random()-.5)*spread,y,r:6+Math.random()*6,a:.55,vx:(Math.random()-.5)*14});
+  for(const p of arr){ p.y-=34*dt; p.x+=p.vx*dt; p.r+=10*dt; p.a-=.22*dt; } for(let i=arr.length-1;i>=0;i--) if(arr[i].a<=0) arr.splice(i,1);
+  for(const p of arr){ ctx.fillStyle=`rgba(220,232,245,${p.a})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.3); ctx.fill(); ctx.strokeStyle=`rgba(150,170,200,${p.a*.5})`; ctx.stroke(); } }
+// шыны шәйнек
+function kettle(ctx,x,y,w,h,level,boil,bubbles,dt,T){
+  ctx.save(); ctx.fillStyle='#2b2b2b'; rr(ctx,x-10,y+h,w+20,22,6); ctx.fill(); ctx.fillStyle=T>=99.5||boil>0?'#ff5a3a':'#7a1f15'; ctx.beginPath(); ctx.arc(x+w-16,y+h+11,4,0,6.3); ctx.fill();
+  ctx.strokeStyle='#c0392b'; ctx.lineWidth=12; ctx.beginPath(); ctx.moveTo(x+w,y+20); ctx.quadraticCurveTo(x+w+55,y+30,x+w+30,y+h-30); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+10,y); ctx.lineTo(x+w-10,y); ctx.lineTo(x+w,y+h); ctx.closePath(); ctx.fillStyle='rgba(225,240,250,.55)'; ctx.fill(); ctx.save(); ctx.clip();
+  const ly=y+h-(h-10)*level; const g=ctx.createLinearGradient(0,ly,0,y+h); g.addColorStop(0,'rgba(120,180,225,.75)'); g.addColorStop(1,'rgba(47,127,192,.85)'); ctx.fillStyle=g; ctx.fillRect(x,ly,w,y+h-ly);
+  const rate=boil*60; if(Math.random()<rate*dt&&level>0.05) bubbles.push({x:x+12+Math.random()*(w-24),y:y+h-4,r:1.5,vy:20});
+  for(const b of bubbles){ b.vy+=60*dt*(0.5+b.r/6); b.y-=b.vy*dt; b.r=Math.min(7,b.r+dt*4*boil+0.6*dt); }
+  for(let i=bubbles.length-1;i>=0;i--) if(bubbles[i].y<ly+2) bubbles.splice(i,1);
+  ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.3; for(const b of bubbles){ ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,6.3); ctx.stroke(); }
+  ctx.restore(); ctx.strokeStyle='#8aa'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+10,y); ctx.lineTo(x+w-10,y); ctx.lineTo(x+w,y+h); ctx.stroke();
+  ctx.fillStyle='#c0392b'; rr(ctx,x+4,y-12,w-8,14,5); ctx.fill(); ctx.beginPath(); ctx.moveTo(x+6,y+8); ctx.lineTo(x-26,y-4); ctx.lineTo(x-24,y+6); ctx.lineTo(x+8,y+30); ctx.closePath(); ctx.fillStyle='rgba(225,240,250,.7)'; ctx.fill(); ctx.strokeStyle='#8aa'; ctx.stroke(); ctx.restore(); }
+
+const LABS={};
+/* 1 — титул */
+const tt={b:[],s:[]}; let tTime=0;
+LABS.cTitle={frame(ctx,w,h,dt){ const g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#fdf3e6'); g.addColorStop(1,'#f1e2cf'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#d9c3a5'; ctx.fillRect(0,h-70,w,70);
+  kettle(ctx,380,170,230,220,.72,1,tt.b,dt,100); steamPuffs(ctx,tt.s,352,166,14,dt,10);
+  label(ctx,'100 °C',840,190,'#d2462f',64,'center',true,'Georgia'); label(ctx,'r = 2,3·10⁶ Дж/кг',840,250,'#1f2630',28,'center',false,'Georgia');
+  label(ctx,'Q = rm',150,200,'#1f2630',40,'center',true,'Georgia'); label(ctx,'Q = cm(t₂−t₁) + rm',150,250,'#6b6658',20,'center',false,'Georgia'); }};
+/* 2 — булану vs қайнау */
+const gl={b:[],s1:[],s2:[]};
+LABS.cGoal={frame(ctx,w,h,dt){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+  // сол: булану (бетінен)
+  ctx.fillStyle='#e8eef5'; rr(ctx,40,140,380,220,10); ctx.fill(); ctx.fillStyle='rgba(47,127,192,.8)'; ctx.fillRect(40,230,380,130);
+  for(let i=0;i<10;i++){ const x=60+i*36, yy=230-((tTime*20+i*13)%60); ctx.fillStyle=`rgba(47,127,192,${1-(230-yy)/60})`; ctx.beginPath(); ctx.arc(x,yy,3,0,6.3); ctx.fill(); }
+  label(ctx,'БУЛАНУ',230,110,'#2f7fc0',24,'center',true); label(ctx,'тек сұйық бетінен · кез келген t-да',230,400,'#6b6658',15);
+  // оң: қайнау
+  kettle(ctx,620,150,220,210,.7,1,gl.b,dt,100); steamPuffs(ctx,gl.s2,592,146,10,dt,10);
+  label(ctx,'ҚАЙНАУ',730,110,'#d2462f',24,'center',true); label(ctx,'бүкіл көлемінде · тек қайнау t-сында',730,410,'#6b6658',15);
+  label(ctx,'vs',510,260,'#999',30,'center',true,'Georgia'); }};
+
+/* 3 — қайнау кезеңдері */
+const bo={T:20,heat:false,b:[],s:[],t:0,pops:[]};
+$('bHeat').onclick=()=>{ bo.heat=!bo.heat; $('bHeat').textContent=bo.heat?'⏸ Тоқтату':'🔥 Қыздыру'; SND.go(); };
+$('bRe').onclick=()=>{ bo.T=20; bo.b=[]; bo.s=[]; bo.heat=false; $('bHeat').textContent='🔥 Қыздыру'; };
+const STG=[[20,'20–60 °C','Суда еріген ауа ыдыс түбінде ұсақ көпіршіктер түзеді.'],[60,'60–99 °C','Көпіршіктердің ішінде бу пайда болады, олар үлкейеді. <b>Архимед күші</b> артып, көпіршіктер жоғары көтеріледі, бірақ суық жоғарғы қабатта <b>жабылып қалады</b> — шу естіледі.'],[99.5,'100 °C · ҚАЙНАУ','Көпіршіктер бетке жетіп жарылады, бу босайды. Температура <b>тұрақты</b> болып қалады — берілген жылу буға айналуға жұмсалады.']];
+function bStages(){ $('bStages').innerHTML=STG.map((s,i)=>{ const on=bo.T>=s[0]&&(i===STG.length-1||bo.T<STG[i+1][0]); return `<div style="padding:5px 8px;border-radius:4px;margin-bottom:3px;${on?'background:#fbe3d4;':'opacity:.5'}"><b>${s[1]}</b> — ${s[2]}</div>`; }).join(''); }
+LABS.cBoil={frame(ctx,w,h,dt){ bo.t+=dt; if(bo.heat){ bo.T=Math.min(100,bo.T+dt*5); } else if(bo.T>20) bo.T=Math.max(20,bo.T-dt*1.2); bStages();
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+  const cx=270, cy=280, R=130; // колба
+  ctx.strokeStyle='#555'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-110,cy+150); ctx.lineTo(cx-150,h-20); ctx.moveTo(cx+110,cy+150); ctx.lineTo(cx+150,h-20); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx-130,cy+132); ctx.lineTo(cx+130,cy+132); ctx.stroke();
+  if(bo.heat) flame(ctx,cx,cy+150,1.2,bo.t); ctx.fillStyle='#b8b090'; ctx.fillRect(cx-24,cy+150,48,30);
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,6.3); ctx.rect(cx-28,cy-R-110,56,120); ctx.clip();
+  ctx.fillStyle='rgba(225,240,250,.5)'; ctx.fillRect(cx-R,cy-R-120,2*R,2*R+130);
+  const ly=cy-40; const gT=Math.min(1,(bo.T-20)/80); ctx.fillStyle=`rgba(${47+gT*80},${127-gT*40},${192-gT*90},.75)`; ctx.fillRect(cx-R,ly,2*R,cy+R-ly);
+  // көпіршіктер
+  const rate=bo.T<60?(bo.T-20)/40*4:bo.T<99.5?6+(bo.T-60)/40*10:28;
+  if(bo.heat&&Math.random()<rate*dt) bo.b.push({x:cx+(Math.random()-.5)*R*1.5,y:cy+R-14,r:1.5,vy:5});
+  for(const b of bo.b){ b.vy+=(20+b.r*10)*dt; b.y-=b.vy*dt; const grow=bo.T<60?.4:bo.T<99.5?2.5:5;
+    const coldTop=bo.T<99.5&&b.y<cy+10; b.r=coldTop?b.r-6*dt:Math.min(9,b.r+grow*dt); }
+  for(let i=bo.b.length-1;i>=0;i--){ const b=bo.b[i]; if(b.r<=0.4){ bo.b.splice(i,1); if(Math.random()<.3) SND.bubble(); } else if(b.y<ly+2){ bo.pops.push({x:b.x,y:ly,a:1}); bo.b.splice(i,1); } }
+  ctx.strokeStyle='rgba(255,255,255,.95)'; ctx.lineWidth=1.4; for(const b of bo.b){ ctx.beginPath(); ctx.arc(b.x,b.y,Math.max(.5,b.r),0,6.3); ctx.stroke(); }
+  for(const p of bo.pops){ p.a-=dt*3; ctx.strokeStyle=`rgba(255,255,255,${p.a})`; ctx.beginPath(); ctx.arc(p.x,p.y,8*(1.2-p.a),Math.PI,0); ctx.stroke(); } bo.pops=bo.pops.filter(p=>p.a>0);
+  ctx.restore();
+  ctx.strokeStyle='#7a8a95'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.arc(cx,cy,R,-Math.PI/2+.22,Math.PI*1.5-.22); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx-28,cy-R+3); ctx.lineTo(cx-28,cy-R-110); ctx.moveTo(cx+28,cy-R+3); ctx.lineTo(cx+28,cy-R-110); ctx.stroke();
+  if(bo.T>=99.5) steamPuffs(ctx,bo.s,cx,cy-R-112,12,dt,20); else steamPuffs(ctx,bo.s,cx,cy-R-112,0,dt);
+  // Архимед күші
+  const big=bo.b.reduce((m,b)=>b.r>(m?m.r:3)?b:m,null); if(big&&bo.T>60){ arrow(ctx,big.x+14,big.y,big.x+14,big.y-34,'#d2462f',2); label(ctx,'F_A',big.x+20,big.y-36,'#d2462f',13,'left',true); }
+  thermo(ctx,560,60,360,bo.T); label(ctx,fx(bo.T,1)+' °C',560,470,'#d2462f',26,'center',true,'Georgia');
+  label(ctx,'44-сурет. Сұйықтың қайнауы',cx,h-4,'#6b6658',13); }};
+
+/* 4 — r инфографика */
+let rT=0;
+const RV=[['Су',2.3,'#2f7fc0'],['Аммиак',1.4,'#7aa6c9'],['Спирт',0.9,'#e8a53a'],['Эфир',0.4,'#9b7bb5'],['Сынап',0.3,'#8c8c8c']];
+LABS.cR={frame(ctx,w,h,dt){ rT=Math.min(1,rT+dt*.6); const e=1-Math.pow(1-rT,3); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+  label(ctx,'Кейбір заттардың меншікті булану жылуы (11-кесте), МДж/кг',20,28,'#1f2630',16,'left',true);
+  RV.forEach((r,i)=>{ const y=50+i*42, bw=420*r[1]/2.3*e; label(ctx,r[0],100,y+24,'#1f2630',15,'right'); ctx.fillStyle=r[2]; rr(ctx,110,y+6,Math.max(4,bw),26,4); ctx.fill(); label(ctx,fx(r[1]*e,1),118+bw,y+25,'#1f2630',15,'left',true); });
+  // энергия баспалдағы: 1 кг мұз → бу
+  const x0=620; label(ctx,'1 кг судың «энергия жолы»',x0,28,'#1f2630',16,'left',true);
+  const steps=[['Мұзды балқыту (0 °C)','λm = 0,34 МДж',0.34,'#9fd3f0'],['Суды 0 → 100 °C қыздыру','cmΔt = 0,42 МДж',0.42,'#e8a53a'],['Суды буға айналдыру (100 °C)','rm = 2,3 МДж',2.3,'#d2462f']];
+  let yy=60; steps.forEach(s=>{ const bh=150*s[2]/2.3*e+4; ctx.fillStyle=s[3]; rr(ctx,x0,yy,70,bh,5); ctx.fill(); label(ctx,s[0],x0+82,yy+16,'#1f2630',14,'left',true); label(ctx,s[1],x0+82,yy+34,'#6b6658',13,'left'); yy+=Math.max(bh,44)+8; });
+  label(ctx,'Буға айналдыру балқытудан ≈ 7 есе,',x0,h-36,'#d2462f',15,'left',true); label(ctx,'қыздырудан ≈ 5,5 есе көп энергия алады!',x0,h-16,'#d2462f',15,'left',true);
+  // молекула суреті
+  const mx=180, my=320; ctx.fillStyle='#eef4fa'; rr(ctx,30,270,420,140,8); ctx.fill();
+  label(ctx,'сұйық — молекулалар тығыз',130,292,'#2f7fc0',13,'center',true); label(ctx,'бу — молекулалар алыс',350,292,'#d2462f',13,'center',true);
+  for(let i=0;i<24;i++){ const x=60+(i%6)*24+3*Math.sin(tTime*6+i), y=310+Math.floor(i/6)*22+3*Math.cos(tTime*5+i); ctx.fillStyle='#2f7fc0'; ctx.beginPath(); ctx.arc(x,y,7,0,6.3); ctx.fill(); }
+  for(let i=0;i<8;i++){ const x=270+((i*47+tTime*60*(i%2?1:-1))%160+160)%160, y=305+((i*31+tTime*40)%90); ctx.fillStyle='#d2462f'; ctx.beginPath(); ctx.arc(x,y,7,0,6.3); ctx.fill(); }
+  arrow(ctx,232,350,262,350,'#e8a53a',3); label(ctx,'+ r',247,342,'#e8a53a',13,'center',true); }};
+
+/* 5 — Q калькулятор */
+const qd={mode:0};
+document.querySelectorAll('[data-qm]').forEach(b=>b.onclick=()=>{ qd.mode=+b.dataset.qm; document.querySelectorAll('[data-qm]').forEach(x=>x.classList.toggle('on',x===b)); qUpd(); });
+function qUpd(){ const m=+$('qM').value, t1=+$('qT').value; $('qMv').textContent=fx(m,1)+' кг'; $('qTv').textContent=t1+' °C';
+  const Q1=4200*m*(100-t1), Q2=2.3e6*m;
+  $('qOut').innerHTML = qd.mode===0
+   ? `<span class="s">Қыздыру:</span> Q₁ = cm(t₂−t₁) = 4200·${fx(m,1)}·(100−${t1}) = ${sci(Q1)} Дж &nbsp; <span class="s">Қайнату:</span> Q₂ = rm = 2,3·10⁶·${fx(m,1)} = ${sci(Q2)} Дж<br><span class="s">Барлығы:</span> <b>Q = Q₁ + Q₂ = ${sci(Q1+Q2)} Дж</b> &nbsp;<span class="s">(қайнатуға кеткен үлес — ${fx(Q2/(Q1+Q2)*100,0)} %)</span>`
+   : `<span class="s">100 °C-тағы бу конденсацияланғанда</span> <b>Q = −rm = −2,3·10⁶·${fx(m,1)} = −${sci(Q2)} Дж</b> &nbsp;<span class="s">— «минус» жылу <b>бөлінетінін</b> білдіреді. Бұл жылу дәл қайнатуға жұмсалған жылуға тең.</span>`; }
+['qM','qT'].forEach(id=>$(id).oninput=qUpd); qUpd();
+let qT=0; const qs={b:[],s:[]};
+LABS.cQ={frame(ctx,w,h,dt){ qT+=dt; ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); const m=+$('qM').value, t1=+$('qT').value, Q1=4200*m*(100-t1), Q2=2.3e6*m, sc=640/(2.3e6*3+4200*3*100);
+  if(qd.mode===0){ kettle(ctx,40,60,150,150,.6,1,qs.b,dt,100); steamPuffs(ctx,qs.s,22,56,8,dt,8); arrow(ctx,115,280,115,245,'#d2462f',4); label(ctx,'+Q (жылу береміз)',115,298,'#d2462f',14,'center',true); }
+  else { ctx.fillStyle='#dfe8f0'; rr(ctx,50,70,140,140,10); ctx.fill(); for(let i=0;i<6;i++){ ctx.fillStyle=`rgba(90,143,194,${.4+.4*Math.sin(qT*3+i)})`; ctx.beginPath(); ctx.arc(80+(i%3)*40,110+Math.floor(i/3)*50,14,0,6.3); ctx.fill(); }
+    for(let i=0;i<5;i++){ const y=200+((qT*50+i*20)%60); ctx.fillStyle='#2f7fc0'; ctx.beginPath(); ctx.arc(80+i*20,y,4,0,6.3); ctx.fill(); } arrow(ctx,120,240,180,280,'#5a8fc2',4); label(ctx,'−Q (жылу бөлінеді)',140,300,'#5a8fc2',14,'center',true); }
+  const x0=280, y=110;
+  label(ctx,'Жылу мөлшерінің құрамы',x0,40,'#1f2630',16,'left',true);
+  if(qd.mode===0){ ctx.fillStyle='#e8a53a'; rr(ctx,x0,y,Math.max(2,Q1*sc),56,6); ctx.fill(); ctx.fillStyle='#d2462f'; rr(ctx,x0+Q1*sc+3,y,Q2*sc,56,6); ctx.fill();
+    if(Q1*sc>60) label(ctx,'cm(t₂−t₁)',x0+Q1*sc/2,y+34,'#fff',14,'center',true); label(ctx,'rm',x0+Q1*sc+Q2*sc/2,y+34,'#fff',18,'center',true);
+    label(ctx,'Q = '+sci(Q1+Q2)+' Дж',x0,y+90,'#1f2630',20,'left',true,'Georgia'); }
+  else { ctx.fillStyle='#5a8fc2'; rr(ctx,x0,y,Q2*sc,56,6); ctx.fill(); label(ctx,'−rm',x0+Q2*sc/2,y+34,'#fff',18,'center',true); label(ctx,'Q = −'+sci(Q2)+' Дж',x0,y+90,'#1f2630',20,'left',true,'Georgia'); }
+  label(ctx,'масштаб: 3 кг су үшін толық жолақ',w-14,h-12,'#999',12,'right'); }};
+
+/* 6 — график */
+const gr={mode:0,s:0,play:false,b:[],st:[]};
+document.querySelectorAll('[data-gm]').forEach(b=>b.onclick=()=>{ gr.mode=+b.dataset.gm; gr.s=0; gr.play=false; $('gPlay').textContent='▶ Бастау'; document.querySelectorAll('[data-gm]').forEach(x=>x.classList.toggle('on',x===b)); });
+$('gPlay').onclick=()=>{ if(gr.s>=1) gr.s=0; gr.play=!gr.play; $('gPlay').textContent=gr.play?'⏸ Тоқтату':'▶ Бастау'; };
+const GP=[[[0,20],[336,100],[2636,100],[2716,140]],[[0,140],[80,100],[2380,100],[2716,20]]];
+const GT=[['AB','Су қызады: Q = cm(t₂ − t₁). Температура 20 °C-тан 100 °C-қа дейін көтеріледі.'],['BC','Су қайнайды: Q = rm. Сұйық буға айналғанша температура 100 °C-та <b>тұрақты</b> қалады. Бұл бөлік ең ұзын — буға айналу көп энергия алады!'],['CD','Барлық су буға айналды. Енді бу қызады, температура қайта көтеріледі.']];
+const GTc=[['AB','Бу суиды: температура 140 °C-тан 100 °C-қа түседі.'],['BC','100 °C-та бу <b>конденсацияланады</b>: Q = −rm. Бу сұйыққа айналғанша температура тұрақты, жылу бөлінеді.'],['CD','Ыстық су суып, қоршаған ортаның температурасына жетеді.']];
+LABS.cG={frame(ctx,w,h,dt){ if(gr.play){ gr.s=Math.min(1,gr.s+dt*.09); if(gr.s>=1){ gr.play=false; $('gPlay').textContent='↺ Қайталау'; } }
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); const L=64,R=20,T=24,B=50, X=q=>L+(w-L-R)*q/2716, Y=t=>h-B-(h-T-B)*t/150;
+  ctx.strokeStyle='#eee3cf'; ctx.lineWidth=1; for(let t=0;t<=140;t+=20){ ctx.beginPath(); ctx.moveTo(L,Y(t)); ctx.lineTo(w-R,Y(t)); ctx.stroke(); label(ctx,String(t),L-8,Y(t)+4,'#6b6658',12,'right'); }
+  for(let q=0;q<=2500;q+=500){ ctx.beginPath(); ctx.moveTo(X(q),T); ctx.lineTo(X(q),h-B); ctx.stroke(); label(ctx,String(q),X(q),h-B+16,'#6b6658',11); }
+  ctx.strokeStyle='#1f2630'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(L,T); ctx.lineTo(L,h-B); ctx.lineTo(w-R,h-B); ctx.stroke();
+  label(ctx,'t, °C',L-10,T-6,'#1f2630',14,'right',true); label(ctx,'Q, кДж (1 кг су)',w-R,h-12,'#1f2630',14,'right',true);
+  const P=GP[gr.mode]; const tot=gr.s*2716; ctx.strokeStyle=gr.mode?'#5a8fc2':'#d2462f'; ctx.lineWidth=3.5; ctx.beginPath(); ctx.moveTo(X(P[0][0]),Y(P[0][1]));
+  let cur=P[0], seg=0; for(let i=1;i<P.length;i++){ const a=P[i-1],b=P[i]; if(tot>=b[0]){ ctx.lineTo(X(b[0]),Y(b[1])); cur=b; seg=i-1; } else { const k=(tot-a[0])/(b[0]-a[0]); cur=[tot,a[1]+(b[1]-a[1])*k]; ctx.lineTo(X(cur[0]),Y(cur[1])); seg=i-1; break; } } ctx.stroke();
+  ctx.setLineDash([4,4]); ctx.strokeStyle='#999'; ctx.lineWidth=1; P.forEach(p=>{ if(tot>=p[0]){ ctx.beginPath(); ctx.moveTo(X(p[0]),Y(p[1])); ctx.lineTo(X(p[0]),h-B); ctx.stroke(); } }); ctx.setLineDash([]);
+  'ABCD'.split('').forEach((c,i)=>{ if(tot>=P[i][0]-1) label(ctx,c,X(P[i][0])+(i===3?-14:8),Y(P[i][1])-8,'#1f2630',16,'left',true); });
+  ctx.fillStyle='#1f2630'; ctx.beginPath(); ctx.arc(X(cur[0]),Y(cur[1]),6,0,6.3); ctx.fill();
+  gr.seg=gr.s>0?seg:-1; gr.T=cur[1];
+  const tx=(gr.mode?GTc:GT); $('gTxt').innerHTML=gr.seg<0?'«Бастау» батырмасын басып, графиктің сызылуын бақылаңдар.':`<b style="font-size:17px">${tx[seg][0]}</b> — ${tx[seg][1]}`; }};
+LABS.cGb={frame(ctx,w,h,dt){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); const seg=gr.seg, m=gr.mode, T=gr.T||20;
+  let level=.7, boil=0, steam=0;
+  if(m===0){ if(seg===1){ const P=GP[0]; level=.7*(1-(gr.s*2716-336)/2300); boil=1; steam=10; } else if(seg===2){ level=0; steam=4; } else boil=T>70?(T-70)/30*.6:0; }
+  else { if(seg<=0){ level=0; steam=4; } else if(seg===1){ level=.7*((gr.s*2716-80)/2300); steam=3; } else level=.7; }
+  kettle(ctx,70,60,150,140,Math.max(0,level),boil,gr.b,dt,T); steamPuffs(ctx,gr.st,52,56,steam,dt,10);
+  label(ctx,fx(T,0)+' °C',w/2,h-8,'#d2462f',20,'center',true,'Georgia'); }};
+
+/* 7 — қысым */
+const PLC=[[-28,'Атырау (Каспий маңы)'],[350,'Тайтөбе ауылы'],[800,'Алматы'],[1700,'Медеу'],[2260,'Шымбұлақ'],[4000,'Тянь-Шань асуы'],[7010,'Хан Тәңірі'],[8848,'Эверест']];
+const pr={cook:false};
+const tBoil=p=>1/(1/373.15-8.314/40660*Math.log(p/101.325))-273.15;
+$('pCook').onclick=()=>{ pr.cook=!pr.cook; $('pCook').classList.toggle('on',pr.cook); pUpd(); };
+$('pH').oninput=()=>{ pr.cook=false; $('pCook').classList.remove('on'); pUpd(); };
+function pUpd(){ const h=+$('pH').value, p=pr.cook?200:101.325*Math.exp(-h/8400), T=tBoil(p); const pl=PLC.reduce((a,b)=>Math.abs(b[0]-h)<Math.abs(a[0]-h)?b:a);
+  $('pHv').textContent=h+' м'; $('pP').textContent=fx(p,1)+' кПа'; $('pT').textContent=fx(T,1)+' °C'; $('pN').textContent=pr.cook?'Скороварка ішінде':pl[1];
+  $('pC').textContent=pr.cook?'Қысым артса, t артады → тамақ тез піседі':T<99?'Қысым аз → су ертерек қайнайды, тамақ ұзақ піседі':'Қалыпты жағдайға жақын'; }
+pUpd();
+const ps={b:[],s:[]};
+LABS.cP={frame(ctx,w,h,dt){ const hh=+$('pH').value, p=pr.cook?200:101.325*Math.exp(-hh/8400), T=tBoil(p);
+  const g=ctx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#bcdcf2'); g.addColorStop(1,'#eef6fb'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  // тау
+  const X0=40,W=560,base=h-30,Yh=a=>base-(base-40)*a/8848;
+  ctx.fillStyle='#9fb08a'; ctx.beginPath(); ctx.moveTo(X0,base); [[0,0],[.15,.08],[.3,.25],[.45,.2],[.6,.55],[.75,.7],[.85,1],[.95,.6],[1,.3],[1,0]].forEach(([u,v])=>ctx.lineTo(X0+u*W,base-(base-40)*v)); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.moveTo(X0+.78*W,Yh(6400)); ctx.lineTo(X0+.85*W,40); ctx.lineTo(X0+.9*W,Yh(7000)); ctx.closePath(); ctx.fill();
+  let lastY=1e9; PLC.forEach(([a,n])=>{ const y=Yh(Math.max(0,a)); const ly=Math.min(y-3,lastY-14); lastY=ly; ctx.fillStyle='rgba(31,38,48,.5)'; ctx.fillRect(X0-4,y,8,1.5); if(ly<y-6){ ctx.strokeStyle='rgba(31,38,48,.3)'; ctx.beginPath(); ctx.moveTo(X0+4,y); ctx.lineTo(X0+9,ly-3); ctx.stroke(); } label(ctx,n+' · '+a+' м',X0+10,ly,'#2c3340',11.5,'left',true); });
+  const my=Yh(Math.max(0,hh)); ctx.fillStyle='#d2462f'; ctx.beginPath(); ctx.moveTo(X0-14,my); ctx.lineTo(X0-26,my-7); ctx.lineTo(X0-26,my+7); ctx.fill();
+  // ауа молекулалары тығыздығы
+  const dens=Math.round(p/101.325*26); for(let i=0;i<dens;i++){ const x=640+((i*53+tTime*30)%320), y=40+((i*37)%150); ctx.fillStyle='rgba(31,38,48,.35)'; ctx.beginPath(); ctx.arc(x,y,3,0,6.3); ctx.fill(); }
+  label(ctx,'ауа қысымы: '+fx(p,1)+' кПа',800,30,'#1f2630',14,'center',true);
+  kettle(ctx,730,230,140,120,.65,T>0?1:0,ps.b,dt,T); steamPuffs(ctx,ps.s,712,226,8,dt,8);
+  thermo(ctx,920,180,170,T,140); label(ctx,'t қ = '+fx(T,1)+' °C',800,h-12,'#d2462f',20,'center',true,'Georgia'); }};
+
+/* 8 — зертхана */
+const LQ=[{n:'Су',c:4200,r:2.3e6,tb:100},{n:'Спирт',c:2500,r:0.9e6,tb:78}];
+const lb={lq:0,T:20,m:0.8,m0:0.8,t:0,run:false,sp:1,rec:[],hist:[],b:[],s:[]};
+function lReset(){ lb.m0=+$('lM').value/1000; lb.m=lb.m0; lb.T=20; lb.t=0; lb.run=false; lb.rec=[]; lb.hist=[]; $('lGo').textContent='▶ Қосу'; lTab(); $('lRes').innerHTML=''; }
+document.querySelectorAll('[data-lq]').forEach(b=>b.onclick=()=>{ lb.lq=+b.dataset.lq; document.querySelectorAll('[data-lq]').forEach(x=>x.classList.toggle('on',x===b)); lReset(); });
+$('lM').oninput=()=>{ $('lMv').textContent=$('lM').value+' г'; lReset(); }; $('lP').oninput=()=>{ $('lPv').textContent=$('lP').value+' Вт'; };
+$('lMv').textContent=$('lM').value+' г'; $('lPv').textContent=$('lP').value+' Вт';
+$('lGo').onclick=()=>{ lb.run=!lb.run; $('lGo').textContent=lb.run?'⏸ Тоқтату':'▶ Қосу'; if(lb.run) SND.go(); };
+$('lSp').onclick=()=>{ lb.sp=lb.sp===1?10:1; $('lSp').textContent=lb.sp===1?'×10':'×1'; $('lSp').classList.toggle('on',lb.sp===10); };
+$('lRe').onclick=lReset;
+function lTab(){ $('lTab').innerHTML='<tr><th>№</th><th>Уақыт t, с</th><th>Температура, °C</th><th>Масса m, г</th><th>P, Вт</th><th>Күйі</th></tr>'+(lb.rec.length?lb.rec.map((r,i)=>`<tr><td>${i+1}</td><td>${fx(r.t,1)}</td><td>${fx(r.T,1)}</td><td>${fx(r.m*1000,1)}</td><td>${r.P}</td><td>${r.boil?'қайнап жатыр':'қызып жатыр'}</td></tr>`).join(''):'<tr><td colspan="6" style="color:#999">«📝 Жазу» батырмасымен өлшеулерді жазыңдар</td></tr>'); }
+$('lRec').onclick=()=>{ const L=LQ[lb.lq]; lb.rec.push({t:lb.t,T:lb.T,m:lb.m,P:+$('lP').value,boil:lb.T>=L.tb-0.01}); lTab(); SND.tick(); };
+$('lChk').onclick=()=>{ const v=parseNum($('lAns').value), r=LQ[lb.lq].r; if(!isFinite(v)){ toast('Сан енгізіңіз: мысалы 2,3e6'); return; }
+  const ok=Math.abs(v-r)/r<=0.06; const bs=lb.rec.filter(x=>x.boil); let hint='';
+  if(bs.length>=2){ const a=bs[0],b=bs[bs.length-1]; if(b.m<a.m) hint=` &nbsp;<span style="color:#6b6658">(${b.P}·${fx(b.t-a.t,1)} / ${fx(a.m-b.m,3)} = ${sci(b.P*(b.t-a.t)/(a.m-b.m))})</span>`; }
+  $('lRes').innerHTML=ok?' <span class="ok">✓ Дұрыс! '+LQ[lb.lq].n+' үшін r = '+sci(r)+' Дж/кг</span>':' <span class="no">✗ Қайта есепте</span>'+hint; ok?SND.ok():SND.bad(); };
+lTab();
+LABS.cLab={frame(ctx,w,h,dt){ const L=LQ[lb.lq], P=+$('lP').value;
+  if(lb.run){ let d=dt*lb.sp; while(d>0){ const s=Math.min(d,.05); d-=s;
+      if(lb.T<L.tb){ lb.T=Math.min(L.tb,lb.T+P*s/(L.c*lb.m)); } else { lb.m-=P*s/L.r; }
+      lb.t+=s; if(lb.m<=lb.m0*0.15){ lb.run=false; $('lGo').textContent='▶ Қосу'; toast('Сұйық аз қалды — шәйнек сөнді'); break; } }
+    if(!lb.hist.length||lb.t-lb.hist[lb.hist.length-1][0]>1) lb.hist.push([lb.t,lb.T,lb.m]); }
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+  const boil=lb.T>=L.tb-0.01?1:(lb.T>L.tb-20?(lb.T-(L.tb-20))/20*.5:0);
+  // таразы
+  ctx.fillStyle='#d9d4c8'; rr(ctx,60,270,300,40,6); ctx.fill(); ctx.fillStyle='#1d2321'; rr(ctx,150,280,120,24,4); ctx.fill();
+  label(ctx,fx(lb.m*1000,1)+' г',210,298,'#ffb23e',20,'center',true,'Consolas'); label(ctx,'электронды таразы (ыдыс нөлденген)',210,326,'#6b6658',11.5);
+  kettle(ctx,115,100,190,148,lb.m/1.5*1.25,lb.run?boil:0,lb.b,dt,lb.T); if(lb.run&&boil>=1) steamPuffs(ctx,lb.s,95,96,10,dt,8); else steamPuffs(ctx,lb.s,95,96,0,dt);
+  label(ctx,L.n+' · P = '+P+' Вт',210,40,'#1f2630',15,'center',true);
+  thermo(ctx,420,60,190,lb.T,120); label(ctx,fx(lb.T,1)+' °C',420,300,'#d2462f',20,'center',true,'Georgia');
+  // секундомер
+  ctx.fillStyle='#1d2321'; rr(ctx,480,60,150,56,6); ctx.fill(); label(ctx,'СЕКУНДОМЕР',555,78,'#9fb0a9',10,'center',true); label(ctx,fx(lb.t,1)+' с',555,106,'#ffb23e',24,'center',true,'Consolas');
+  label(ctx,lb.sp===10?'жылдамдық ×10':'',555,134,'#d2462f',12,'center',true);
+  // график
+  const gx=660,gy=290,gw=340,gh=240, tm=Math.max(60,lb.t*1.1);
+  ctx.strokeStyle='#eee3cf'; for(let v=0;v<=120;v+=20){ const y=gy-gh*v/120; ctx.beginPath(); ctx.moveTo(gx,y); ctx.lineTo(gx+gw,y); ctx.stroke(); label(ctx,String(v),gx-6,y+4,'#6b6658',10,'right'); }
+  ctx.strokeStyle='#1f2630'; ctx.beginPath(); ctx.moveTo(gx,gy-gh); ctx.lineTo(gx,gy); ctx.lineTo(gx+gw,gy); ctx.stroke(); label(ctx,'t, °C',gx,gy-gh-6,'#1f2630',12,'center',true); label(ctx,'уақыт, с',gx+gw,gy+18,'#1f2630',12,'right',true);
+  ctx.strokeStyle='#d2462f'; ctx.lineWidth=2.5; ctx.beginPath(); lb.hist.forEach((p,i)=>{ const x=gx+gw*p[0]/tm, y=gy-gh*p[1]/120; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
+  ctx.strokeStyle='#2f7fc0'; ctx.beginPath(); lb.hist.forEach((p,i)=>{ const x=gx+gw*p[0]/tm, y=gy-gh*(p[2]/1.6*120)/120; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
+  label(ctx,'— температура',gx+gw-100,gy-gh+14,'#d2462f',12,'left',true); label(ctx,'— масса',gx+gw-100,gy-gh+30,'#2f7fc0',12,'left',true);
+  label(ctx,boil>=1?'ҚАЙНАП ЖАТЫР: t тұрақты, масса азаяды':'',w/2+150,h-10,'#d2462f',14,'center',true); }};
+
+/* 9 — үлгі */
+let exK=0; function exShow(k){ exK=Math.max(0,Math.min(5,k)); [...$('ex').children].forEach((c,i)=>c.classList.toggle('on',i<exK)); $('exN').disabled=exK>=5; }
+$('exN').onclick=()=>{ exShow(exK+1); SND.tick(); }; $('exR').onclick=()=>exShow(0);
+LABS.cEx={frame(ctx,w,h){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); const sc=900/5.272e6, a=0.672e6*sc, b=4.6e6*sc;
+  ctx.fillStyle='#e8a53a'; rr(ctx,40,30,exK>=2?a:0,46,6); ctx.fill(); ctx.fillStyle='#d2462f'; rr(ctx,44+a,30,exK>=3?b:0,46,6); ctx.fill();
+  if(exK>=2) label(ctx,'Q₁',40+a/2,60,'#fff',15,'center',true); if(exK>=3) label(ctx,'Q₂ = rm = 4,6 МДж',44+a+b/2,60,'#fff',16,'center',true); if(exK>=4) label(ctx,'Q = 5,272 МДж',w-20,104,'#1f2630',16,'right',true); }};
+
+/* 10 — 3D жылыжай */
+const GH={ok:false,rot:true,steam:true,ang:.7,el:.42,dist:30};
+$('ghRot').onclick=()=>{ GH.rot=!GH.rot; $('ghRot').classList.toggle('on',GH.rot); };
+$('ghSteam').onclick=()=>{ GH.steam=!GH.steam; $('ghSteam').textContent=GH.steam?'♨ Буды өшіру':'♨ Буды қосу'; };
+function ghInit(){ if(GH.ok||!window.THREE) return; GH.ok=true; const T=THREE, cv=$('gh3d');
+  const R=new T.WebGLRenderer({canvas:cv,antialias:true}); R.setPixelRatio(Math.min(2,window.devicePixelRatio||1)); R.setSize(1020,470,false);
+  const S=new T.Scene(); S.background=new T.Color(0xcfe0ee); S.fog=new T.Fog(0xcfe0ee,40,90);
+  const C=new T.PerspectiveCamera(42,1020/470,.1,200); GH.R=R; GH.S=S; GH.C=C;
+  S.add(new T.HemisphereLight(0xffffff,0x9aa4ad,.85)); const sun=new T.DirectionalLight(0xffffff,.7); sun.position.set(10,20,8); S.add(sun);
+  const snow=new T.Mesh(new T.PlaneGeometry(120,120),new T.MeshLambertMaterial({color:0xf4f7fa})); snow.rotation.x=-Math.PI/2; S.add(snow);
+  // жылыжай
+  const Lx=16,Wz=8,Hw=3; const glass=new T.MeshPhongMaterial({color:0xbfe3ff,transparent:true,opacity:.22,side:T.DoubleSide,depthWrite:false,shininess:90});
+  const frameM=new T.LineBasicMaterial({color:0x56606a});
+  const box=new T.BoxGeometry(Lx,Hw,Wz); const bm=new T.Mesh(box,glass); bm.position.y=Hw/2; S.add(bm); const be=new T.LineSegments(new T.EdgesGeometry(box),frameM); be.position.y=Hw/2; S.add(be);
+  const roofShape=new T.Shape(); roofShape.moveTo(-Wz/2,0); roofShape.lineTo(0,2.2); roofShape.lineTo(Wz/2,0); roofShape.lineTo(-Wz/2,0);
+  const rg=new T.ExtrudeGeometry(roofShape,{depth:Lx,bevelEnabled:false}); const roof=new T.Mesh(rg,glass); roof.rotation.y=Math.PI/2; roof.position.set(-Lx/2,Hw,0); S.add(roof);
+  const re=new T.LineSegments(new T.EdgesGeometry(rg),frameM); re.rotation.copy(roof.rotation); re.position.copy(roof.position); S.add(re);
+  for(let x=-Lx/2;x<=Lx/2;x+=2){ const g=new T.BufferGeometry().setFromPoints([new T.Vector3(x,0,-Wz/2),new T.Vector3(x,Hw,-Wz/2),new T.Vector3(x,Hw+2.2,0),new T.Vector3(x,Hw,Wz/2),new T.Vector3(x,0,Wz/2)]); S.add(new T.Line(g,frameM)); }
+  // топырақ, өсімдіктер
+  const soil=new T.Mesh(new T.BoxGeometry(Lx-.4,.12,Wz-.4),new T.MeshLambertMaterial({color:0x6b4a2b})); soil.position.y=.06; S.add(soil);
+  const leaf=new T.MeshLambertMaterial({color:0x3f8f3a}), tom=new T.MeshLambertMaterial({color:0xd93a2b}), stake=new T.MeshLambertMaterial({color:0xb08a5a});
+  for(let row=-1;row<=1;row++) for(let x=-6.5;x<=6.5;x+=1.3){ const z=row*2.3; const st=new T.Mesh(new T.CylinderGeometry(.03,.03,1.6),stake); st.position.set(x,.8,z); S.add(st);
+    const l=new T.Mesh(new T.SphereGeometry(.38,10,8),leaf); l.position.set(x,.9,z); l.scale.y=1.6; S.add(l);
+    for(let k=0;k<3;k++){ const t=new T.Mesh(new T.SphereGeometry(.11,8,6),tom); t.position.set(x+Math.cos(k*2.1+x)*.3,.6+k*.25,z+Math.sin(k*2.1+x)*.3); S.add(t); } }
+  // бу құбырлары
+  const pipeM=new T.MeshPhongMaterial({color:0xb5bcc4,shininess:60}); GH.pipes=[];
+  [[-Wz/2+.35],[Wz/2-.35]].forEach(([z])=>{ for(const y of [.35,.7]){ const p=new T.Mesh(new T.CylinderGeometry(.09,.09,Lx-.6,10),pipeM); p.rotation.z=Math.PI/2; p.position.set(0,y,z); S.add(p); GH.pipes.push([y,z]); } });
+  // қазандық
+  const bh=new T.Mesh(new T.BoxGeometry(3,2.6,3),new T.MeshLambertMaterial({color:0x9a6b4d})); bh.position.set(Lx/2+3.2,1.3,-1); S.add(bh);
+  const roof2=new T.Mesh(new T.BoxGeometry(3.3,.2,3.3),new T.MeshLambertMaterial({color:0x4a4a4a})); roof2.position.set(Lx/2+3.2,2.7,-1); S.add(roof2);
+  const ch=new T.Mesh(new T.CylinderGeometry(.22,.26,2.4,12),new T.MeshLambertMaterial({color:0x7a7a7a})); ch.position.set(Lx/2+4,3.9,-1.8); S.add(ch);
+  const feed=new T.Mesh(new T.CylinderGeometry(.12,.12,3.4,10),new T.MeshPhongMaterial({color:0xd2462f})); feed.rotation.z=Math.PI/2; feed.position.set(Lx/2+.2,.7,-1); S.add(feed);
+  // бөлшектер: бу (құбырларда), түтін, қар
+  const mk=(n,col,size,op)=>{ const g=new T.BufferGeometry(); g.setAttribute('position',new T.BufferAttribute(new Float32Array(n*3),3)); const pts=new T.Points(g,new T.PointsMaterial({color:col,size,transparent:true,opacity:op,depthWrite:false})); S.add(pts); return pts; };
+  GH.st=mk(260,0xffffff,.16,.9); GH.sm=mk(60,0x888888,.5,.45); GH.sn=mk(500,0xffffff,.12,.95);
+  GH.stD=[...Array(260)].map(()=>({p:Math.random(),k:Math.floor(Math.random()*4)})); GH.smD=[...Array(60)].map(()=>Math.random()); GH.snD=[...Array(500)].map(()=>[Math.random()*60-30,Math.random()*20,Math.random()*60-30]);
+  // белгілер
+  GH.lbl=[[0,Hw+2.6,0,'Жылыжай ішінде +22 °C'],[Lx/2+3.2,3.2,-1,'Қазандық: су → бу (100 °C)'],[-Lx/2+1,.9,Wz/2-.35,'Бу құбыры: конденсация, Q = −rm'],[-Lx/2-3,1.5,4,'Сыртта −15 °C']];
+  $('ghLbl').innerHTML=GH.lbl.map((_,i)=>`<div class="lbl3d" id="gl${i}"></div>`).join('');
+  // басқару
+  let drag=null; cv.addEventListener('pointerdown',e=>{ drag=[e.clientX,e.clientY]; GH.rot=false; $('ghRot').classList.remove('on'); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove',e=>{ if(!drag) return; GH.ang-=(e.clientX-drag[0])*.008; GH.el=Math.max(.08,Math.min(1.3,GH.el+(e.clientY-drag[1])*.006)); drag=[e.clientX,e.clientY]; });
+  cv.addEventListener('pointerup',()=>drag=null); cv.addEventListener('wheel',e=>{ e.preventDefault(); GH.dist=Math.max(14,Math.min(50,GH.dist*Math.exp(e.deltaY*.001))); },{passive:false});
+}
+function ghFrame(dt){ if(!GH.ok) ghInit(); if(!GH.ok) return; const T=THREE; if(GH.rot) GH.ang+=dt*.12;
+  const C=GH.C; C.position.set(Math.sin(GH.ang)*Math.cos(GH.el)*GH.dist,Math.sin(GH.el)*GH.dist+1,Math.cos(GH.ang)*Math.cos(GH.el)*GH.dist); C.lookAt(0,1.5,0);
+  const Lx=16; let a=GH.st.geometry.attributes.position.array;
+  GH.stD.forEach((d,i)=>{ d.p=(d.p+dt*.22)%1; const [y,z]=GH.pipes[d.k]; if(GH.steam){ a[i*3]=Lx/2-.3-d.p*(Lx-.6); a[i*3+1]=y+(Math.random()-.5)*.08; a[i*3+2]=z+(Math.random()-.5)*.08; } else a[i*3+1]=-5; }); GH.st.geometry.attributes.position.needsUpdate=true;
+  a=GH.sm.geometry.attributes.position.array; GH.smD.forEach((p,i)=>{ GH.smD[i]=(p+dt*.15)%1; const q=GH.smD[i]; a[i*3]=Lx/2+4+q*2+Math.sin(i)*.3*q; a[i*3+1]=5.1+q*5; a[i*3+2]=-1.8+Math.cos(i)*.4*q; }); GH.sm.geometry.attributes.position.needsUpdate=true;
+  a=GH.sn.geometry.attributes.position.array; GH.snD.forEach((p,i)=>{ p[1]-=dt*1.2; if(p[1]<0) p[1]=20; const inside=Math.abs(p[0])<8&&Math.abs(p[2])<4; a[i*3]=p[0]; a[i*3+1]=inside&&p[1]<5.2?-5:p[1]; a[i*3+2]=p[2]; }); GH.sn.geometry.attributes.position.needsUpdate=true;
+  GH.R.render(GH.S,C);
+  const wr=$('gh3d').getBoundingClientRect(), sc=wr.width/1020;
+  GH.lbl.forEach((l,i)=>{ const v=new T.Vector3(l[0],l[1],l[2]).project(C); const el=$('gl'+i); el.textContent=l[3]; el.style.left=((v.x*.5+.5)*1020)+'px'; el.style.top=((-v.y*.5+.5)*470)+'px'; el.style.display=v.z<1?'block':'none'; }); }
+
+/* 11 — ФС сұрақтары */
+const FSQ=[
+  {q:'1. Тәулікке 460 МДж жылуды тек будың конденсациясы есебінен алу үшін неше кг бу қажет?',a:200,u:'кг'},
+  {q:'2. Осы 200 кг конденсат 100 °C-тан 40 °C-қа дейін суығанда қосымша қанша жылу береді?',a:50.4,u:'МДж',tol:.02},
+  {q:'3. Қазанға 20 °C су құйылады. 200 кг буды алу үшін қазан неше МДж жылу жұмсайды?',a:527.2,u:'МДж',tol:.01},
+  {q:'4. 1 кг бу конденсацияланып, 40 °C-қа дейін суыса, ол 100 °C-тан 40 °C-қа суыған 1 кг ыстық судан неше есе көп жылу береді?',a:(2.3e6+252000)/252000,u:'есе',tol:.04},
+  {q:'5. Таңертең жылыжай шынысының ішкі бетінде су тамшылары пайда болды. Бұл қандай процесс?',ch:['Конденсация','Булану','Қайнау','Балқу'],a:0},
+  {q:'6. Егер жылыжай таулы ауылда (2000 м, 80 кПа) болса, ашық қазандағы су шамамен неше °C-та қайнайды?',ch:['≈ 93 °C','100 °C','≈ 110 °C','≈ 70 °C'],a:0}
+];
+$('fsQ').innerHTML=FSQ.map((q,i)=>`<div class="q" data-i="${i}"><div class="qt">${q.q}</div><div class="ans">${q.ch?shuffle(q.ch.map((c,j)=>[c,j])).map(([c,j])=>`<button class="opt" data-j="${j}">${c}</button>`).join(''):`<input placeholder="жауап"> <span>${q.u}</span>`}<button class="btn main fsc">Тексеру</button><span class="res"></span></div></div>`).join('');
+$('fsQ').addEventListener('click',e=>{ const qd=e.target.closest('.q'); if(!qd) return; const q=FSQ[+qd.dataset.i];
+  const op=e.target.closest('.opt'); if(op){ qd.querySelectorAll('.opt').forEach(o=>o.classList.toggle('sel',o===op)); return; }
+  if(!e.target.closest('.fsc')) return; let ok;
+  if(q.ch){ const s=qd.querySelector('.opt.sel'); if(!s){ toast('Жауапты таңдаңыз'); return; } ok=+s.dataset.j===q.a; }
+  else { const v=parseNum(qd.querySelector('input').value); if(!isFinite(v)){ toast('Сан енгізіңіз'); return; } ok=Math.abs(v-q.a)<=Math.max(1e-9,(q.tol||0.001)*q.a); }
+  qd.querySelector('.res').innerHTML=ok?' <span class="ok">✓ Дұрыс!</span>':' <span class="no">✗ Қайта есептеп көр</span>'; ok?SND.ok():SND.bad(); });
+$('fsQ').addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('input')) e.target.closest('.q').querySelector('.fsc').click(); });
+
+/* 12 — жарыс */
+const GQS=[
+ [ {q:'Қалыпты қысымда су неше °C-та қайнайды?',o:['100 °C','0 °C','78 °C','50 °C']},
+   {q:'Меншікті булану жылуы қай әріппен белгіленеді?',o:['r','c','λ','q']},
+   {q:'[r] = ?',o:['Дж/кг','Дж','Вт','Дж/(кг·°C)']},
+   {q:'Бу → су процесі:',o:['Конденсация','Қайнау','Балқу','Қатаю']},
+   {q:'Қайнау кезінде температура…',o:['тұрақты','артады','кемиді','нөлге тең']},
+   {q:'1 кг су буға айналу үшін:',o:['2,3 МДж','2,3 Дж','4200 Дж','0,34 МДж']},
+   {q:'Тауда су … температурада қайнайды',o:['төмен','жоғары','100 °C','0 °C']},
+   {q:'Көпіршікті жоғары көтеретін күш:',o:['Архимед күші','Ауырлық күші','Үйкеліс','Серпімділік']} ],
+ [ {q:'Спирт неше °C-та қайнайды?',o:['78 °C','100 °C','0 °C','120 °C']},
+   {q:'Меншікті булану жылуының формуласы:',o:['r = Q/m','r = Qm','r = m/Q','r = cΔt']},
+   {q:'Конденсация кезінде жылу…',o:['бөлінеді','жұтылады','өзгермейді','жоғалады']},
+   {q:'Су → бу процесі:',o:['Булану','Конденсация','Балқу','Кристалдану']},
+   {q:'2 кг су буға айналу үшін (r = 2,3 МДж/кг):',o:['4,6 МДж','2,3 МДж','1,15 МДж','6,9 МДж']},
+   {q:'Графиктегі BC бөлігі — …',o:['қайнау','қызу','суыну','балқу']},
+   {q:'Қысым артса, қайнау температурасы…',o:['артады','кемиді','өзгермейді','0-ге тең']},
+   {q:'Скороварка ішінде су … қайнайды',o:['100 °C-тан жоғары','100 °C-тан төмен','50 °C-та','мүлдем қайнамайды']} ]
+];
+const GN=8, P2=[{},{}]; let gOn=false, gT0=0, lastTouch=0;
+function gName(k){ return (k?$('nmB'):$('nmA')).value.trim()||(k?'2-оқушы':'1-оқушы'); }
+function gRender(k){ const s=k?'B':'A', p=P2[k]; $('pr'+s).textContent=p.done?'Аяқталды':'Сұрақ '+(p.i+1)+' / '+GN; $('pb'+s).style.width=(p.i/GN*100)+'%'; $('sc'+s).textContent=p.score;
+  if(p.done){ $('q'+s).innerHTML='🏁 Аяқтадың!<br><span style="font-size:19px;font-weight:400">'+p.score+' / '+GN+' · '+fx(p.time,1)+' с</span>'; $('o'+s).innerHTML=''; $('st'+s).textContent=P2[1-k].done?'':'Қарсыласыңды күтеміз…'; return; }
+  const q=GQS[k][p.i]; $('q'+s).innerHTML=q.q; $('o'+s).innerHTML=shuffle(q.o.map((t,j)=>[t,j])).map(([t,j])=>`<button class="o" data-k="${k}" data-c="${j===0?1:0}">${t}</button>`).join(''); }
+function gAnswer(btn){ const k=+btn.dataset.k, p=P2[k], s=k?'B':'A'; if(!gOn||p.busy||p.done) return; p.busy=true; const ok=btn.dataset.c==='1';
+  if(ok){ p.score++; btn.classList.add('good'); $('st'+s).textContent='✓ Дұрыс! +1'; SND.ok(); } else { btn.classList.add('badc'); $('o'+s).querySelectorAll('.o').forEach(b=>{ if(b.dataset.c==='1') b.classList.add('good'); }); $('st'+s).textContent='✗ Қате'; SND.bad(); }
+  $('sc'+s).textContent=p.score; setTimeout(()=>{ p.i++; p.busy=false; $('st'+s).textContent=''; if(p.i>=GN){ p.done=true; p.time=(performance.now()-gT0)/1000; } gRender(k); gEnd(); },ok?450:900); }
+function gEnd(){ if(!(P2[0].done&&P2[1].done)) return; gOn=false; const [a,b]=P2;
+  const w=a.score!==b.score?(a.score>b.score?0:1):(Math.abs(a.time-b.time)<.05?-1:(a.time<b.time?0:1));
+  $('gOver').innerHTML=`<div class="box"><h3>🏁 ${w<0?'Тең ойын!':gName(w)+' жеңді!'}</h3><p style="font-size:23px"><b style="color:#1f5fa8">${gName(0)}: ${a.score} ұпай · ${fx(a.time,1)} с</b><br><b style="color:#d2462f">${gName(1)}: ${b.score} ұпай · ${fx(b.time,1)} с</b></p><p>Келесі жұп шығуға дайын ба?</p><button class="btn main" id="gAgain" style="font-size:20px;padding:12px 28px">▶ Жаңа жұп</button></div>`;
+  $('gOver').style.display='flex'; SND.win(); $('gAgain').onclick=()=>{ $('nmA').value='1-оқушы'; $('nmB').value='2-оқушы'; gStart(); }; }
+function gStart(){ for(const k of [0,1]) P2[k]={i:0,score:0,done:false,busy:false,time:0}; $('gOver').style.display='none'; gRender(0); gRender(1);
+  ['A','B'].forEach(s=>{ $('q'+s).innerHTML='Дайындал…'; $('o'+s).style.visibility='hidden'; }); let n=3; $('gNum').textContent=n; SND.tick();
+  const iv=setInterval(()=>{ n--; if(n>0){ $('gNum').textContent=n; SND.tick(); return; } clearInterval(iv); $('gNum').textContent='Алға!'; SND.go(); gOn=true; gT0=performance.now();
+    ['A','B'].forEach(s=>$('o'+s).style.visibility='visible'); gRender(0); gRender(1); },800); }
+$('gStart').onclick=gStart; $('gRestart').onclick=()=>{ if(confirm('Жарысты басынан бастаймыз ба?')) gStart(); };
+$('duel').addEventListener('touchstart',e=>{ let hit=false; for(const t of e.changedTouches){ const el=document.elementFromPoint(t.clientX,t.clientY), b=el&&el.closest&&el.closest('.o'); if(b){ hit=true; gAnswer(b); } } if(hit){ e.preventDefault(); lastTouch=Date.now(); } },{passive:false});
+$('duel').addEventListener('mousedown',e=>{ if(Date.now()-lastTouch<800) return; const b=e.target.closest('.o'); if(b){ e.preventDefault(); gAnswer(b); } });
+$('duel').addEventListener('pointerdown',e=>{ if(e.pointerType!=='pen') return; const b=e.target.closest('.o'); if(b){ e.preventDefault(); lastTouch=Date.now(); gAnswer(b); } });
+setInterval(()=>{ if(!gOn) return; const now=(performance.now()-gT0)/1000; ['A','B'].forEach((s,k)=>$('ck'+s).textContent=fx(P2[k].done?P2[k].time:now,1)+' с'); },100);
+
+/* ---------- тақта ---------- */
+const board=(()=>{ const cv=$('ink'), ctx=cv.getContext('2d'); let ink=store.get('qn_ink',{}), color='#f2efe2', width=3.8, eraser=false, curS=null, saveT;
+  const list=()=> (ink[cur]=ink[cur]||[]);
+  function resize(){ const r=cv.getBoundingClientRect(); if(!r.width) return; const k=window.devicePixelRatio||1; cv.width=Math.round(r.width*k); cv.height=Math.round(r.height*k); redraw(); }
+  function seg(s,i){ const W=cv.width,H=cv.height,p=s.p,base=s.w*W/520; ctx.globalCompositeOperation=s.e?'destination-out':'source-over'; ctx.strokeStyle=s.c; ctx.lineCap='round'; ctx.lineJoin='round';
+    if(i===0){ ctx.lineWidth=base*(.6+p[0][2]*.8); ctx.beginPath(); ctx.moveTo(p[0][0]*W,p[0][1]*H); ctx.lineTo(p[0][0]*W+.1,p[0][1]*H); ctx.stroke(); return; }
+    const a=p[i-1],b=p[i],z=p[i-2]||a; ctx.lineWidth=base*(.6+b[2]*.8); ctx.beginPath(); ctx.moveTo((z[0]+a[0])/2*W,(z[1]+a[1])/2*H); ctx.quadraticCurveTo(a[0]*W,a[1]*H,(a[0]+b[0])/2*W,(a[1]+b[1])/2*H); ctx.stroke(); }
+  function redraw(){ ctx.globalCompositeOperation='source-over'; ctx.clearRect(0,0,cv.width,cv.height); for(const s of list()) for(let i=0;i<s.p.length;i++) seg(s,i); ctx.globalCompositeOperation='source-over'; }
+  function save(){ clearTimeout(saveT); saveT=setTimeout(()=>store.set('qn_ink',ink),400); }
+  function pt(e){ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,e.pointerType==='pen'?(e.pressure||.5):.5]; }
+  cv.addEventListener('pointerdown',e=>{ if(e.button>0&&e.pointerType==='mouse') return; cv.setPointerCapture(e.pointerId); curS={c:color,w:eraser?width*5:width,e:eraser,p:[pt(e)]}; list().push(curS); seg(curS,0); e.preventDefault(); });
+  cv.addEventListener('pointermove',e=>{ if(!curS) return; const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e]; for(const ev of evs){ curS.p.push(pt(ev)); seg(curS,curS.p.length-1); } });
+  const end=()=>{ if(curS){ curS=null; ctx.globalCompositeOperation='source-over'; save(); } };
+  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end); cv.addEventListener('lostpointercapture',end);
+  document.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{ color=b.dataset.c; eraser=false; $('erase').classList.remove('on'); document.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b)); });
+  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{ width=+b.dataset.w; document.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('on',x===b)); });
+  $('erase').onclick=()=>{ eraser=!eraser; $('erase').classList.toggle('on',eraser); };
+  function undo(){ list().pop(); redraw(); save(); } $('undo').onclick=undo;
+  $('wipe').onclick=()=>{ if(!list().length) return; ink[cur]=[]; redraw(); save(); toast('Осы беттегі жазба тазаланды'); };
+  return {resize,redraw,undo}; })();
+
+/* ---------- навигация ---------- */
+const slides=[...document.querySelectorAll('.slide')]; let cur=0;
+slides.forEach((s,i)=>{ const b=document.createElement('button'); b.className='dot'+(s.dataset.wide?' gm':''); b.textContent=i+1; b.title=s.dataset.title; b.onclick=()=>go(i); $('dots').appendChild(b); });
+function go(i){ i=Math.max(0,Math.min(slides.length-1,i)); if(i!==cur) SND.page(); slides[cur].classList.remove('on'); cur=i; const s=slides[cur]; s.classList.add('on');
+  $('stitle').textContent=s.dataset.title; $('bhint').textContent=s.dataset.hint||''; $('stage').classList.toggle('wide',!!s.dataset.wide);
+  if(s.querySelector('#cR')) rT=0;
+  [...$('dots').children].forEach((d,j)=>d.classList.toggle('on',j===cur)); $('cnt').textContent=(cur+1)+' / '+slides.length;
+  $('prev').disabled=cur===0; $('next').disabled=cur===slides.length-1; store.set('qn_slide',cur); requestAnimationFrame(()=>board.resize()); }
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{ const typing=/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName);
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!typing){ board.undo(); e.preventDefault(); return; } if(typing) return;
+  if(['ArrowRight','PageDown'].includes(e.key)){ go(cur+1); e.preventDefault(); } else if(['ArrowLeft','PageUp'].includes(e.key)){ go(cur-1); e.preventDefault(); } else if('fFаА'.includes(e.key)) toggleFS(); });
+function toggleFS(){ const d=document.documentElement; try{ if(!document.fullscreenElement){ const r=(d.requestFullscreen||d.webkitRequestFullscreen).call(d); if(r&&r.catch) r.catch(()=>toast('F11 пернесін басыңыз')); } else document.exitFullscreen(); }catch(e){ toast('F11 пернесін басыңыз'); } }
+document.addEventListener('fullscreenchange',()=>{ const t=document.fullscreenElement?'✕ Толық экраннан шығу':'⛶ Толық экран'; $('fs').textContent=t; $('fsTop').textContent=t; });
+$('fs').onclick=toggleFS; $('fsTop').onclick=toggleFS;
+$('snd').onclick=()=>{ $('snd').textContent=SND.toggle()?'🔊':'🔇'; }; $('snd').textContent=SND.on?'🔊':'🔇';
+function fit(){ const s=Math.min(innerWidth/1600,innerHeight/900); $('stage').style.transform=`translate(${(innerWidth-1600*s)/2}px,${(innerHeight-900*s)/2}px) scale(${s})`; board.resize(); }
+addEventListener('resize',fit); fit();
+const hashN=/^#(\d+)$/.exec(location.hash); go(hashN?(+hashN[1]-1):Math.min(store.get('qn_slide',0),slides.length-1));
+addEventListener('hashchange',()=>{ const m=/^#(\d+)$/.exec(location.hash); if(m) go(+m[1]-1); });
+let prevT=performance.now();
+(function loop(now){ const dt=Math.min(.05,(now-prevT)/1000); prevT=now; tTime+=dt;
+  slides[cur].querySelectorAll('canvas.lab').forEach(cv=>{ const L=LABS[cv.id]; if(L) L.frame(cv.getContext('2d'),cv.width,cv.height,dt); });
+  if(slides[cur].querySelector('#gh3d')) ghFrame(dt);
+  requestAnimationFrame(loop); })(prevT);
+</script>
+</body>
+</html>
